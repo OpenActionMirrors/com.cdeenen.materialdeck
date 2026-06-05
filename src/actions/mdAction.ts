@@ -1,4 +1,4 @@
-import streamDeck, { action, type JsonObject, type KeyDownEvent, type KeyUpEvent, SingletonAction, type WillAppearEvent, type PropertyInspectorDidAppearEvent, type SendToPluginEvent, DidReceiveGlobalSettingsEvent, TitleParametersDidChangeEvent } from "@elgato/streamdeck";
+import streamDeck, { action, type KeyDownEvent, type KeyUpEvent, SingletonAction, type WillAppearEvent, type PropertyInspectorDidAppearEvent, type SendToPluginEvent, DidReceiveGlobalSettingsEvent, TitleParametersDidChangeEvent, type DialDownEvent, type DialUpEvent, type DialRotateEvent, type TouchTapEvent } from "@elgato/streamdeck";
 import { transmitButtonEvent, debug, sendToPropertyInspector, onSendToPlugin, settingsConfig, formatTitle, setWebsocketPort, searchSyncedGlobalSettings, getLastSection } from "../common.js"
 
 export class mdAction extends SingletonAction {
@@ -41,6 +41,22 @@ export class mdAction extends SingletonAction {
 	override async onKeyDown(ev: KeyDownEvent): Promise<void> {
 		transmitButtonEvent(ev);
 		//debug('keyDown')
+	}
+
+	override async onDialDown?(ev: DialDownEvent): void | Promise<void> {
+		transmitButtonEvent(ev);
+	}
+
+	override async onDialUp?(ev: DialUpEvent): void | Promise<void> {
+		transmitButtonEvent(ev);
+	}
+
+	override async onDialRotate?(ev: DialRotateEvent): void | Promise<void> {
+		transmitButtonEvent(ev);
+	}
+
+	override async onTouchTap?(ev: TouchTapEvent): void | Promise<void> {
+		transmitButtonEvent(ev);
 	}
 
 	override async onKeyUp(ev: KeyUpEvent): Promise<void> {

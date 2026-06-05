@@ -153,7 +153,7 @@ export function isVisible(data) {
 /**
  * Get a setting from the settingsConfig
  */
-function getSetting(id, settingsConfig) {
+export function getSetting(id, settingsConfig) {
     //first check base level
     const s = settingsConfig.find(s => s.id == id)
     if (s != undefined) return s;
@@ -165,4 +165,24 @@ function getSetting(id, settingsConfig) {
         if (s) return s;
     }
     return false;
+}
+
+/**
+ * Refresh the contents of a select option
+ * @param {*} id setting id
+ * @param {*} settingsConfig 
+ */
+export function refreshSetting(id, settingsConfig) {
+    const setting = getSetting(id, settingsConfig);
+    const div = document.createElement("div");
+    generateElement(div, [setting])
+    const newElement = div.children[0]?.children[1];
+
+    const existingElement = document.getElementById(id);
+    console.dir(newElement)
+    //if (!newElement.value) newElement.value = newElement.options[0].value;
+    console.log("Refresh", id, setting, newElement, existingElement, newElement.selected, newElement.value)
+
+    existingElement.innerHTML = newElement.innerHTML;
+    SD.saveSetting({ key: id, value: newElement.value }, true);
 }

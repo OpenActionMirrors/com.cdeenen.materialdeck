@@ -49,12 +49,25 @@
             <span class="close" id="closeSettingsMenu">&times;</span>
             <div id="popupContent">
                 <h3>Global Plugin Settings</h3>
-                <div class="sdpi-item modal-item">
-                    <div class="sdpi-item-label modal-item-label">Port</div>
-                    <input class="sdpi-item-value" type="number" id="globalPortValue" value="3001">
+                <div>
+                    <div class="sdpi-item modal-item">
+                        <div class="sdpi-item-label modal-item-label">Port</div>
+                        <input class="sdpi-item-value modal-item-value" type="number" id="globalPortValue" value="3001">
+                    </div>
+                    <i>Set the port for the connection between the Stream Deck app and Foundry client.<br>
+                        Must be the same as configured in the Material Deck module settings.</i>
                 </div>
-                <i>Set the port for the connection between the Stream Deck app and Foundry client.<br>
-                    Must be the same as configured in the Material Deck module settings.</i>
+                <hr>
+                <div>
+                    <div class="sdpi-item modal-item">
+                        <div class="sdpi-item-label modal-item-label">Collapse by Default</div>
+                        <div class="sdpi-item-value modal-item-value">
+                            <input type="checkbox" id="globalDefaultCollapse">
+                        </div>
+                    </div>
+                    <i>Collapse all sections by default.</i>
+                </div>
+                
             </div>
         </div>
     </div>

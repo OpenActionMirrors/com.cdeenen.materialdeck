@@ -42,7 +42,6 @@ function generateSyncTable(settingsConfig) {
     }
 }
 
-
 export async function setSettingsConfig(conf, refresh=false) {
     //debug('setSettingsConf', conf)
     for (let action of Object.keys(conf)) {
@@ -118,10 +117,11 @@ export function transmitButtonEvent(ev) {
 }
 
 export function sendToPropertyInspector(payload) {
-    streamDeck.ui.current?.sendToPropertyInspector(payload);
+    streamDeck.ui.sendToPropertyInspector(payload);
 }
 
 export async function onSendToPlugin(ev) {
+    ev.payload.controller = ev.action.controllerType;
     const payload = ev.payload;
     const action = ev.action.manifestId;
     const context = ev.action.id;
@@ -326,28 +326,110 @@ export function onDeviceDidDisconnect(device) {
     info("Device Disconnected:", device.id);
 }
 
+const layoutTextParameters = {
+    fontSize: 16,
+    fontFamily: "system-ui",
+}
+
 export function setTitle(data) {
     const { context, device, payload } = data;
-    //debug("setTitle", device, context, payload);
     const button = getButton(data);
-    if (button && button.titleParameters) {
+
+    if (button) {
         button.titleRaw = structuredClone(data.payload.title);
-        const formattedTitle = formatTitle(data.payload.title, button.titleParameters);
-        button.setTitle(formattedTitle);
+        let formattedTitle;
+
+        if (button.controllerType === "Encoder") {
+            formattedTitle = formatTitle(data.payload.title, layoutTextParameters, 90);
+            
+            if (!button.feedback) button.feedback = {};
+            button.feedback.title_4_1 = undefined;
+            button.feedback.title_4_2 = undefined;
+            button.feedback.title_4_3 = undefined;
+            button.feedback.title_4_4 = undefined;
+            button.feedback.title_5_1 = undefined;
+            button.feedback.title_5_2 = undefined;
+            button.feedback.title_5_3 = undefined;
+            button.feedback.title_5_4 = undefined;
+            button.feedback.title_5_5 = undefined;
+
+            const split = formattedTitle.split("\n");
+            
+            if (split.length === 1) {
+                button.feedback.title_5_3 = split[0];
+            }
+            else if (split.length === 2) {
+                button.feedback.title_4_2 = split[0];
+                button.feedback.title_4_3 = split[1];
+            }
+            else if (split.length === 3) {
+                button.feedback.title_5_2 = split[0];
+                button.feedback.title_5_3 = split[1];
+                button.feedback.title_5_4 = split[2];
+            }
+            else if (split.length === 4) {
+                button.feedback.title_4_1 = split[0];
+                button.feedback.title_4_2 = split[1];
+                button.feedback.title_4_3 = split[2];
+                button.feedback.title_4_4 = split[3];
+            }
+            else {
+                button.feedback.title_5_1 = split[0];
+                button.feedback.title_5_2 = split[1];
+                button.feedback.title_5_3 = split[2];
+                button.feedback.title_5_4 = split[3];
+                button.feedback.title_5_5 = split[4];
+            }
+            
+            button.setFeedback(button.feedback);
+        }
+        else if (button.titleParameters) {
+            formattedTitle = formatTitle(data.payload.title, button.titleParameters, 50);
+            
+            button.setTitle(formattedTitle);
+        }
         button.title = formattedTitle;
-        //debug('TEST', data.payload.title)
     }
 }
 
 export function setImage(data) {
     //debug("setImage", device, context, payload);
-
+    let feedback = data.payload.feedback || {};
+    const layout = data.payload.layout;
     if (data.payload.id)
         imageBuffer.add(data);
 
     const button = getButton(data);
     if (button) {
-        button.setImage(data.payload.image);
+        if (button.controllerType === "Encoder") {
+            if (data.payload.image) feedback.icon = data.payload.image;
+            if (feedback.encText) feedback.encText = formatTitle(feedback.encText, layoutTextParameters, 80);
+            
+            if (feedback.encText?.includes("\n")) {
+                const split = feedback.encText.split("\n");
+                feedback.encText = undefined;
+                feedback.encText1 = split[0];
+                feedback.encText2 = split[1];
+            }
+            else {
+                feedback.encText1 = undefined;
+                feedback.encText2 = undefined;
+            }
+
+            feedback.background = undefined
+
+            if (!button.feedback) button.feedback = {};
+            else button.feedback = {
+                ...button.feedback,
+                ...feedback
+            }
+            
+            button.setFeedbackLayout(layout || "layouts/icon.json");
+            button.setFeedback(button.feedback);
+        }
+        else {
+            button.setImage(data.payload.image);
+        }
     }
 }
 
@@ -400,20 +482,19 @@ function getDevice(data) {
     return streamDeck.devices.find(d => d.id === data.device);
 }
 
-export function formatTitle(text, parameters) {
+export function formatTitle(text, parameters, maxSize=180) {
     if (text == '' || text == undefined) return '';
 
     //Get the font
     let font;
     if (parameters) {
         font = '';
-        if (parameters.fontStyle.includes("Bold")) font += "bold ";
-        if (parameters.fontStyle.includes("Italic")) font += "italic ";
+        if (parameters.fontStyle?.includes("Bold")) font += "bold ";
+        if (parameters.fontStyle?.includes("Italic")) font += "italic ";
         font += `${parameters.fontSize}pt `;
         font += parameters.fontFamily === '' ? "system-ui" : parameters.fontFamily;
     }
 
-    const maxSize = 50;
     let formattedText = "";
     
     //text = text.replaceAll("/", "/\n");

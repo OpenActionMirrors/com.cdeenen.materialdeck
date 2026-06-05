@@ -45,7 +45,7 @@ export class Websocket {
             
             ws.on('close', function close() {
                 info(`Closed websocket`, this.clients?.size ? this.clients?.size : '0');
-                streamDeck.ui.current?.sendToPropertyInspector({
+                streamDeck.ui.sendToPropertyInspector({
                     type: 'connectionClosed'
                 })
             })
@@ -64,7 +64,7 @@ export class Websocket {
                     action: getLastSection(a.manifestId),
                     context: a.id,
                     device: d.id,
-                    payload: { settings: await a.getSettings() }
+                    payload: { settings: await a.getSettings(), controller: a.controllerType }
                 })
             }
 
@@ -110,7 +110,7 @@ export class Websocket {
     analyzeMessage(msg) {
         //debug(`Received: ${msg}`);
         const data = JSON.parse(msg);
-        //debug('data', data)
+        //debug('data', data.event, data)
         if (data.type === 'init') {
             clearImageBuffer(data);
             setSettingsConfig(data.settingsConfig);

@@ -77,6 +77,13 @@ class StreamDeck {
     async getGlobalSettings() {
       return await this.client.getGlobalSettings();
     }
+
+    async setGlobalSetting(key, value) {
+      let settings = await this.getGlobalSettings();
+      settings[key] = value;
+      document.globalSettings = settings;
+      return await this.client.setGlobalSettings(settings);
+    }
 }
 
 const expand = (str, defaultVal = {}) => {

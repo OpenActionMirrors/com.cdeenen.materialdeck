@@ -6,6 +6,7 @@ let settingsWindow = new SettingsWindow();
 export let settingsConfig;
 let loaded = false;
 
+//Timeout to handle Foundry connection messages
 const startTimeout = setTimeout(()=>{
     if (!loaded) {
         console.warn('No connection to Foundry detected')
@@ -13,6 +14,21 @@ const startTimeout = setTimeout(()=>{
         document.getElementById('noConnect').style.display = '';
     }
 }, 2000);
+
+//Event listener for settings window
+document.getElementById('settingsButton').addEventListener('click', ()=>{
+    settingsWindow.open();
+})
+
+//Event listeners for hyperlinks at bottom of PI
+for (let linkElmnt of document.getElementsByTagName('hyperlink')) {
+    linkElmnt.addEventListener('click', ()=> {
+        SD.sendToPlugin({
+            type: 'openUrl',
+            url: linkElmnt.dataset.url
+        })
+    })
+}
 
 //Register callback function for when data is received from the plugin
 SD.client.sendToPropertyInspector.subscribe(onSendToPropertyInspector);
@@ -48,12 +64,12 @@ function onSendToPropertyInspector(ev) {
         populateHtml(settingsConfig);
     }
 
+    //Set port
     if (payload.wsPort) {
         settingsWindow.newPort(payload.wsPort)
     }
 
-    
-
+    //Handle display if Foundry is not connected
     if (!loaded) {
         loaded = true;
         document.getElementById('loading').style.display = 'none';
@@ -61,6 +77,7 @@ function onSendToPropertyInspector(ev) {
         document.getElementById('settings').style.display = '';
     }
 
+    //Handle display if Foundry disconnects
     if (payload.type === 'connectionClosed') {
         loaded = false;
         document.getElementById('loading').style.display = 'none';
@@ -175,29 +192,3 @@ SD.measureText = (text, font, size) => {
 
 const fontTypes = ['Regular', 'Bold', 'Italic', 'Bold Italic'];
 const fontList = ['system-ui', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier', 'Courier New', 'Georgia', 'Impact', 'Microsoft Sans Serif', 'Symbol', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'Webdings', 'Wingdings']
-
-
-window.addEventListener('DOMContentLoaded',function () {
-    //settingsWindow.open();
-
-    document.getElementById('settingsButton').addEventListener('click', ()=>{
-        settingsWindow.open();
-    })
-
-    for (let linkElmnt of document.getElementsByTagName('hyperlink')) {
-        linkElmnt.addEventListener('click', ()=> {
-            SD.sendToPlugin({
-                type: 'openUrl',
-                url: linkElmnt.dataset.url
-            })
-        })
-    }
-
-/*
-    SD.sendToPlugin({
-        type: 'openUrl',
-        url: "https://elgato.com"
-    })
-*/
-});
-

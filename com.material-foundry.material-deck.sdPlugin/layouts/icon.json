@@ -1,0 +1,85 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/layout.json",
+	"id": "custom-layout-1",
+	"items": [
+		{
+			"key": "background",
+			"type": "text",
+			"rect": [0, 0, 200, 100],
+            "background": "black",
+			"zOrder": 0
+		},{
+			"key": "icon",
+			"type": "pixmap",
+			"rect": [50, 0, 100, 100],
+			"zOrder": 1
+		},
+        
+        {
+            "key": "title_5_1",
+            "type": "text",
+            "rect": [50, 2, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 11
+        },{
+            "key": "title_5_2",
+            "type": "text",
+            "rect": [50, 22, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 12
+        },{
+            "key": "title_5_3",
+            "type": "text",
+            "rect": [50, 42, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 13
+        },{
+            "key": "title_5_4",
+            "type": "text",
+            "rect": [50, 62, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 14
+        },{
+            "key": "title_5_5",
+            "type": "text",
+            "rect": [50, 82, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 15
+        },
+        
+        {
+            "key": "title_4_1",
+            "type": "text",
+            "rect": [50, 12, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 16
+        },{
+            "key": "title_4_2",
+            "type": "text",
+            "rect": [50, 32, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 17
+        },{
+            "key": "title_4_3",
+            "type": "text",
+            "rect": [50, 52, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 18
+        },{
+            "key": "title_4_4",
+            "type": "text",
+            "rect": [50, 72, 100, 16],
+            "font": { "size": 16, "weight": 600 },
+            "alignment": "center",
+			"zOrder": 19
+        }
+	]
+}

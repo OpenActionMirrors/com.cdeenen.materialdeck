@@ -1650,7 +1650,11 @@ input[type="range"].colortemperature::-webkit-slider-thumb {
   filter:invert(1);
 }
 
-h4 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   margin-left: 90px;
   margin-top: 0px;
   margin-bottom: 2px;
@@ -1717,12 +1721,30 @@ h4 {
   cursor: pointer;
 } 
 
-.modal-item {
-  
+.modal-item-value {
+  max-width: 45%;
+  min-width: 45%;
+}
+
+.modal-item-value input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.modal-item-value input[type="checkbox"]:checked {
+  background-color: #77f;
+  background-image: url(check.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: 1px solid rgb(0,0,0,.4);
 }
 
 .modal-item-label {
-  width: 30px;
+  max-width: 45%;
+  min-width: 45%;
+  text-align: left;
 }
 
 hyperlink {

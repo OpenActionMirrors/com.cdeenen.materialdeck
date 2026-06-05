@@ -1,9 +1,9 @@
-import streamDeck, { LogLevel, DeviceDidConnectEvent, DeviceDidDisconnectEvent } from "@elgato/streamdeck";
+import streamDeck, { DeviceDidConnectEvent, DeviceDidDisconnectEvent } from "@elgato/streamdeck";
 import { websocketServer, debug, onDeviceDidConnect, onDeviceDidDisconnect } from "./common.js";
 import { mdAction } from "./actions/mdAction.js";
 
 // We can enable "trace" logging so that all messages between the Stream Deck, and the plugin are recorded. When storing sensitive information
-streamDeck.logger.setLevel(LogLevel.DEBUG);
+streamDeck.logger.setLevel("debug");
 
 // Register the actions.
 streamDeck.actions.registerAction(new mdAction("com.material-foundry.material-deck.audio"));

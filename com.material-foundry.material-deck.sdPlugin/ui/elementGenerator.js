@@ -1,9 +1,15 @@
-import { isVisible, settingsTable, syncedSettings, addSyncedSetting } from "./helpers.js";
+import { isVisible, settingsTable, syncedSettings, addSyncedSetting, getSetting, refreshSetting } from "./helpers.js";
+import { settingsConfig } from "./propertyInspector.js";
 import { SD } from "./streamDeck.js";
 
-export function generateElement(elmnt, settingsConfig) {
+document.globalSettings = await window.SD.getGlobalSettings();
 
+export function generateElement(elmnt, settingsConfig) {
     for (let s of settingsConfig) {
+        if (s.controller) {
+            //console.log("SettingsConfig", s)
+            if (!s.controller.includes(SD.actionData.controller)) continue;
+        }
         if (s.permission === false) continue;
         if (s.type === 'textbox' || s.type === 'number' || s.type === 'textarea') elmnt.appendChild(generateTextboxElement(s));
         else if (s.type === 'text') elmnt.appendChild(generateTextElement(s));
@@ -219,6 +225,13 @@ function createCheckbox(data) {
 
     checkbox.addEventListener("change", (event) => {
         SD.callEvent('piChanged', {setting: { key: data.id, value: event.target.checked }, sync: event.target.dataset.sync });
+        if (data.refresh) {
+            setTimeout(() => {
+                for (let id of data.refresh) {
+                    refreshSetting(id, settingsConfig);
+                }
+            }, 10)
+        }
     })
 
     div.appendChild(checkbox);
@@ -257,11 +270,26 @@ function createSelect(data, className='', minWidth) {
     }
     if (minWidth) select.style.minWidth = minWidth;
 
-    for (let option of data.options) {
+    let selectOptions = structuredClone(data.options);
+
+    if (data.sort) {
+        selectOptions.sort(function(a, b) {
+            let A = a.sort !== undefined ? a.sort : a[data.sort]?.toUpperCase() || 0;
+            let B = b.sort !== undefined ? b.sort : b[data.sort]?.toUpperCase() || 0;
+            return (A < B) ? -1 : (A > B) ? 1 : 0;
+        })
+    }
+
+    for (let option of selectOptions) {
+        if (option.visibility) {
+            if (!isVisible(option)) continue
+        }
+
         if (option.children) {
             let optGroupElmnt = document.createElement("optgroup");
             optGroupElmnt.setAttribute("label", option.label);
             for (let child of option.children) {
+
                 let optionElmnt = document.createElement("option");
 
                 if (child.folder) {
@@ -318,6 +346,7 @@ function createSelect(data, className='', minWidth) {
     }
 
     const existingVal = SD.getSettingValue(data.id);
+    
     if (existingVal !== undefined) select.value = existingVal;
     else if (data.default) {
         SD.saveSetting({ key: data.id, value: data.default }, false);
@@ -353,6 +382,14 @@ function createSelect(data, className='', minWidth) {
 
     select.addEventListener("change", (event) => {
         SD.callEvent('piChanged', {setting: { key: data.id, value: event.target.value }, sync: event.target.dataset.sync });
+        //console.log("PiChanged", {setting: { key: data.id, value: event.target.value }, sync: event.target.dataset.sync })
+        if (data.refresh) {
+            setTimeout(() => {
+                for (let id of data.refresh) {
+                    refreshSetting(id, settingsConfig);
+                }
+            }, 10)
+        }
     })
 
     return select;
@@ -408,6 +445,13 @@ function createRange(data) {
 
     range.addEventListener("change", (event) => {
         SD.callEvent('piChanged', {setting: { key: data.id, value: event.target.value }, sync: event.target.dataset.sync });
+        if (data.refresh) {
+            setTimeout(() => {
+                for (let id of data.refresh) {
+                    refreshSetting(id, settingsConfig);
+                }
+            }, 10)
+        }
     })
 
     if (data.displayValue) {
@@ -429,6 +473,13 @@ function createRange(data) {
         value.addEventListener("change", event => { 
             range.value = event.target.value; 
             SD.callEvent('piChanged', {setting: { key: data.id, value: event.target.value }, sync: event.target.dataset.sync });
+            if (data.refresh) {
+                setTimeout(() => {
+                    for (let id of data.refresh) {
+                        refreshSetting(id, settingsConfig);
+                    }
+                }, 10)
+            }
         });
     }
 
@@ -474,6 +525,13 @@ function createColorPicker(data) {
 
     colorpicker.addEventListener("change", (event) => {
         SD.callEvent('piChanged', {setting: { key: data.id, value: event.target.value }, sync: event.target.dataset.sync });
+        if (data.refresh) {
+            setTimeout(() => {
+                for (let id of data.refresh) {
+                    refreshSetting(id, settingsConfig);
+                }
+            }, 10)
+        }
     })
     return colorpicker;
 }
@@ -483,7 +541,8 @@ function createColorPicker(data) {
  */
 function generateWrapperElement(data) {
     let expandable;
-
+    const expanded = data.expandable ? data.expanded || !document.globalSettings.defaultCollapse : undefined;
+    
     data.elementId = data.id;
     let elmnt = document.createElement("div");
     elmnt.setAttribute("class", "wrapper" + (data.indent ? " indent" : ""));
@@ -491,11 +550,12 @@ function generateWrapperElement(data) {
     elmnt.setAttribute("id", data.id);
 
     if (data.label) {
-        let label = document.createElement("h4");
+        let label = document.createElement(data.labelTag || "h3");
 
         if (data.expandable) {
+            
             let exp = document.createElement("img");
-            exp.setAttribute("src", data.expanded ? "../imgs/down.png" : "../imgs/right.png");
+            exp.setAttribute("src", expanded ? "../imgs/down.png" : "../imgs/right.png");
             exp.setAttribute("class", "expandableIcon");
             exp.setAttribute("style", "width:12px");
             label.appendChild(exp);
@@ -520,7 +580,7 @@ function generateWrapperElement(data) {
 
     if (data.label && data.expandable) {
         expandable = document.createElement("div");
-        expandable.setAttribute("class", data.expanded ? "" : "collapsed");
+        expandable.setAttribute("class", expanded ? "" : "collapsed");
         generateElement(expandable, data.settings);
         elmnt.appendChild(expandable);
         return elmnt;

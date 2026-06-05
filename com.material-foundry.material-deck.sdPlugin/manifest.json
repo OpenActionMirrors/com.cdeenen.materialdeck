@@ -1,6 +1,6 @@
 {
 	"Name": "Material Deck",
-	"Version": "2.0.1.0",
+	"Version": "2.1.0.0",
 	"Author": "Material Foundry",
 	"PropertyInspectorPath": "ui/propertyInspector.html",
 	"Actions": [
@@ -14,8 +14,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Audio",
 			"UUID": "com.material-foundry.material-deck.audio"
 		},
@@ -29,8 +33,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Combat tracker",
 			"UUID": "com.material-foundry.material-deck.combattracker"
 		},
@@ -44,8 +52,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Customizable action",
 			"UUID": "com.material-foundry.material-deck.custom"
 		},
@@ -59,8 +71,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "External Modules",
 			"UUID": "com.material-foundry.material-deck.external"
 		},
@@ -74,8 +90,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Macro",
 			"UUID": "com.material-foundry.material-deck.macro"
 		},
@@ -89,8 +109,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Other functions",
 			"UUID": "com.material-foundry.material-deck.other"
 		},
@@ -104,8 +128,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Scenes",
 			"UUID": "com.material-foundry.material-deck.scene"
 		},
@@ -119,8 +147,12 @@
 				}
 			],
 			"Controllers": [
-				"Keypad"
+				"Keypad",
+				"Encoder"
 			],
+			"Encoder": {
+				"layout": "layouts/icon.json"
+			},
 			"Tooltip": "Displays selected token information",
 			"UUID": "com.material-foundry.material-deck.token"
 		}
@@ -131,9 +163,9 @@
 	"Description": "Foundry VTT integration for the Stream Deck. Allows you to, for example, control tokens, control playlists, execute macros and display and control the combat tracker.<br><br>Requires the <a href=\"https://foundryvtt.com/packages/materialdeck-premium\">Material Deck Premium</a> Foundry module to be installed and enabled.",
 	"URL": "https://materialfoundry.github.io/MaterialDeck",
 	"Icon": "imgs/plugin/marketplace",
-	"SDKVersion": 2,
+	"SDKVersion": 3,
 	"Software": {
-		"MinimumVersion": "6.5"
+		"MinimumVersion": "6.9"
 	},
 	"OS": [
 		{
